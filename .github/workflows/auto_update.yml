@@ -19,7 +19,6 @@ jobs:
           # 🌟 注意！這裡改為抓取 USERNAME 和 PASSWORD，請務必在 GitHub Secrets 新增！
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          CHAIN_ID: ${{ secrets.CHAIN_ID }}
           PLATFORM_KEY: "FP_TW" # 根據截圖設定
         run: node main.js
         
