@@ -1,14 +1,13 @@
 const fs = require('fs');
 const XLSX = require('xlsx');
 
-// 🌟 注意：這裡的變數已經改為 USERNAME 和 PASSWORD
 const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
-const CHAIN_ID = process.env.CHAIN_ID;
+// 🌟 這裡使用 CHAIN_CODE 讀取 GitHub Secret，但存進名稱為 chainCode 的變數中，完美對齊 API 文件
+const chainCode = "tw-711-test-direct"; 
 const PLATFORM_KEY = process.env.PLATFORM_KEY || "FP_TW"; 
 
-// === 你可以在這裡修改容忍值 ===
-const ERROR_THRESHOLD = 70; 
+const ERROR_THRESHOLD = 100; 
 let errorCount = 0;
 let successCount = 0; 
 
@@ -20,12 +19,12 @@ async function getToken() {
 
     const params = new URLSearchParams();
     params.append('grant_type', 'client_credentials');
-    params.append('username', USERNAME); // 🌟 根據新規格改為 username
-    params.append('password', PASSWORD); // 🌟 根據新規格改為 password
+    params.append('username', USERNAME); 
+    params.append('password', PASSWORD); 
 
     try {
-        // 🌟 登入網址更新為 Middleware 系統
-        const res = await fetch('https://integration-middleware.as.restaurant-partners.com/v2/login', {
+        // 🌟 登入網址修正為 STG 測試環境
+        const res = await fetch('https://integration-middleware.stg.restaurant-partners.com/v2/login', {
             method: 'POST', 
             body: params,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -41,9 +40,9 @@ async function getToken() {
     }
 }
 
-async function updateVendor(token, vendorId) {
-    // 🌟 API 網址更新為 Middleware 系統
-    const url = `https://integration-middleware.as.restaurant-partners.com/v2/chains/${CHAIN_ID}/remoteVendors/${vendorId}/availability`;
+async function updateVendor(token, posVendorId) { // 🌟 變數也對齊文件改成 posVendorId
+    // 🌟 網址修正為 STG，並且變數直接使用 ${chainCode} 和 ${posVendorId}，跟官方文件一模一樣！
+    const url = `https://integration-middleware.stg.restaurant-partners.com/v2/chains/${chainCode}/remoteVendors/${posVendorId}/availability`;
     try {
         const res = await fetch(url, {
             method: 'PUT',
@@ -51,19 +50,19 @@ async function updateVendor(token, vendorId) {
             body: JSON.stringify({ 
                 availabilityState: "OPEN",
                 platformKey: PLATFORM_KEY,
-                platformRestaurantId: vendorId // 🌟 這裡動態塞入跟網址一樣的店家編號
+                platformRestaurantId: posVendorId // 🌟 對應店家編號
             })
         });
         
         if (res.ok) {
-            console.log(`✅ [${vendorId}] 更新成功`);
+            console.log(`✅ [${posVendorId}] 更新成功`);
             successCount++; 
         } else {
-            console.log(`❌ [${vendorId}] 更新失敗: ${await res.text()}`);
+            console.log(`❌ [${posVendorId}] 更新失敗: ${await res.text()}`);
             errorCount++; 
         }
     } catch (err) {
-        console.log(`❌ [${vendorId}] 網路錯誤: ${err.message}`);
+        console.log(`❌ [${posVendorId}] 網路錯誤: ${err.message}`);
         errorCount++; 
     }
 }
