@@ -23,8 +23,8 @@ async function getToken() {
     params.append('password', PASSWORD); 
 
     try {
-        // 🌟 登入網址修正為 STG 測試環境
-        const res = await fetch('https://integration-middleware.stg.restaurant-partners.com/v2/login', {
+        // 🌟 登入網址
+        const res = await fetch('https://integration-middleware.as.restaurant-partners.com/v2/login', {
             method: 'POST', 
             body: params,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -42,7 +42,7 @@ async function getToken() {
 
 async function updateVendor(token, posVendorId) { // 🌟 變數也對齊文件改成 posVendorId
     // 🌟 網址修正為 STG，並且變數直接使用 ${chainCode} 和 ${posVendorId}，跟官方文件一模一樣！
-    const url = `https://integration-middleware.stg.restaurant-partners.com/v2/chains/${chainCode}/remoteVendors/${posVendorId}/availability`;
+    const url = `https://integration-middleware.as.restaurant-partners.com/v2/chains/${chainCode}/remoteVendors/${posVendorId}/availability`;
     try {
         const res = await fetch(url, {
             method: 'PUT',
