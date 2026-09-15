@@ -5,7 +5,7 @@ const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
 // 🌟 這裡使用 CHAIN_CODE 讀取 GitHub Secret，但存進名稱為 chainCode 的變數中，完美對齊 API 文件
 const chainCode = process.env.chainCod; 
-const PLATFORM_KEY = process.env.PLATFORM_KEY || "FP_TW"; 
+const PLATFORM_KEY = process.env.PLATFORM_KEY; 
 
 const ERROR_THRESHOLD = 100; 
 let errorCount = 0;
